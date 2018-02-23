@@ -1,0 +1,82 @@
+import csv
+import datetime
+r = open("guns.csv", 'r')
+data= list(csv.reader(r))
+headers = data[:][0]
+data = data[:][1:]
+years=[]
+year_counts={}
+
+#Analyzing data based on years
+years = [i[1] for i in data]
+for j in years:
+    if j in year_counts:
+        year_counts[j] +=1
+    else:
+        year_counts[j] = 1
+print(year_counts)
+
+#Analyzing data based on unique year-months
+dates = [datetime.datetime(year=int(k[1]), month=int(k[2]), day = 1) for k in data]
+date_counts={}
+for j in dates:
+    if j in year_counts:
+        date_counts[j] +=1
+    else:
+        date_counts[j] = 1
+print(date_counts)
+
+#counting the Male vs Female gun deaths
+sex_counts ={}
+sex = [i[5] for i in data]
+for j in sex:
+    if j in sex_counts:
+        sex_counts[j] +=1
+    else:
+        sex_counts[j] = 1
+
+#Counting gun deaths based on race
+race = [i[7] for i in data]
+race_counts = {}
+for j in race:
+    if j in race_counts:
+        race_counts[j] +=1
+    else:
+        race_counts[j] = 1
+print(sex_counts)
+print(race_counts)
+
+#importing census data to add meaning to the race counts above
+r= open('census.csv', 'r')
+census = list(csv.reader(r))
+print(census)
+
+#Manually creating a dictionary to map the census data to the race_counts data
+mapping = {}
+mapping['Asian/Pacific Islander'] = int(census[1][-2])+int(census[1][-3])
+mapping['Black'] = int(census[1][-5])
+mapping['Native American/Native Alaskan'] = int(census[1][-4])
+mapping['Hispanic'] = int(census[1][-6])
+mapping['White'] = int(census[1][-7])
+
+#looping through race_counts to get the statistic "race deaths per 100k
+for i in race_counts:
+    race_per_hundredk[i] =race_counts[i]/mapping[i]*100000
+print(race_per_hundredk)
+
+#filtering out all but homicides
+intents = [i[3] for i in data]
+homicide_race_counts = {}
+for i, r in enumerate(race):
+    if intents[i] == "Homicide":
+        if r in homicide_race_counts:
+            homicide_race_counts[r] +=1
+        else:
+            homicide_race_counts[r] = 1
+print(homicide_race_counts)
+
+#Mapping the counts to "mapping" variable
+new_race_per_hundredk ={}
+for i in homicide_race_counts:
+    new_race_per_hundredk[i] =homicide_race_counts[i]/mapping[i]*100000
+print(new_race_per_hundredk)
